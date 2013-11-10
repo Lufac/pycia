@@ -1,0 +1,1 @@
+tcpdump -lenx -s 1500 -c 1 -i eth1 port bootps or port bootpc 2>/dev/null | dhcpdump
