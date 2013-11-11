@@ -3,8 +3,9 @@ import os
 import tools
 import info
 import time
+import tftp
 
-def start(f_conf="/etc/dhcpd.conf"):
+def start_ipmi(f_conf="/etc/dhcpd.conf"):
   f_lease = "/tmp/lease.file"
   if not os.path.exists(f_lease): 
     tools.warning_msg("Creating lease file: " + f_lease) 
@@ -35,3 +36,27 @@ def start(f_conf="/etc/dhcpd.conf"):
       time.sleep(10)
       p.kill()
       break
+
+def start_install(f_conf):
+  tftp_server = tftp.tftp('/etc/cluster.conf/pxe')
+  f_lease = "/tmp/lease.file"
+  if not os.path.exists(f_lease):
+    tools.warning_msg("Creating lease file: " + f_lease)
+    open(f_lease, 'a').close()
+  if not os.path.exists(f_conf):
+    error_msg("dhcpd.conf dosen't exist")
+  total_install_nodes = info.get_install_nodes()
+  cmd = "dhcpd -4 -d -cf " + f_conf + " -lf " + f_lease
+  print cmd
+  print "Sleeping 5 seconds ..."
+  print "Installling " + str(total_install_nodes) + " nodes"
+  time.sleep(5)
+  p = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE,shell=True) 
+  while True:
+    s = p.stderr.readline()
+    s = s.split()
+    print "linea dhcpd: ", s
+    if s: #checa que la slida no este vacia
+      if s[0] == 'DHCPOFFER':
+        print "Finding DHCPOFFER... " + str(s)
+        tftp_server.start()

@@ -1,0 +1,7 @@
+Para corregir el error el siguiente error cuando se hace push:
+
+(gnome-ssh-askpass:25319): Gtk-WARNING **: cannot open display:
+
+ejecutar:
+  
+  unset SSH_ASKPASS

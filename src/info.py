@@ -12,6 +12,12 @@ def get_ipmi_nodes():
       total_nodes_ipmi = total_nodes_ipmi + int(cluster['grupos'][grupo]['nodes'])
   return total_nodes_ipmi
 
+def get_install_nodes():
+  total_nodes = 0
+  for grupo in cluster['grupos']:
+      total_nodes = total_nodes + int(cluster['grupos'][grupo]['nodes'])
+  return total_nodes
+
 def print_net():
   printout("++++++++++++++++++++ net data info+++++++++++",RED)
   print net

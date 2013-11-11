@@ -13,11 +13,12 @@ def writefile(fname,data,confdir="/etc/cluster.conf",type="json"):
     warning_msg("Making backup of: " + pathfile)
     shutil.move(pathfile,pathfile + '.old')
   file_conf = open(pathfile,'w')
+  printout("Writing " +  type + " file: " + pathfile, GREEN)
   if type == "json":
-    printout("Writing json file: " + pathfile, GREEN)
     file_conf.write(json.dumps(data, sort_keys=True, indent=2))
   if type == "conf":
-    printout("Writing conf file: " + pathfile, GREEN)
+    file_conf.write(data)
+  if type == "pxe":
     file_conf.write(data)
   file_conf.close()
 

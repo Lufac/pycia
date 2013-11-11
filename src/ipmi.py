@@ -29,6 +29,10 @@ class pyipmi():
     mac = self.execute_ipmi(ip, "raw 0x30 0x21","Error getting admin mac")
     return ":".join( mac.split('\n')[0].split(' ')[5:11])
 
+  def get_PowerStatus( self, ip):
+    status = self.execute_ipmi(ip, "power status","Error getting Power Satus")
+    return status.split('\n')[0].split(' ')[3]
+
   def set_IPstatic( self, ip):
     cmd = "lan set 1 ipsrc static"
     self.execute_ipmi(ip, cmd, "setting ip static")
