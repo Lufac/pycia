@@ -7,22 +7,12 @@ import cluster_dhcp
 import cluster_pxe
 import dhcpd
 
-#cluster_read.config("../conf_examples/cluster.conf")
-#cluster_macs.make()
-#cluster_network.make()
-#Se configuran los ipmis
-#cluster_macs.get_ipmi_groups()
-#info.write_to_files()
 info.read_from_files()
-#cluster_dhcp.writeconf_ipmi()
-#cluster_dhcp.dhcpd_ipmi()
-#Se obtienen las macs apartir de los ipmis
-cluster_macs.get_admin_macs_by_ipmi()
-info.write_to_files()
-#Se comienzan a instalar todos los nodos
+#Se escribe el dhcp de instalacion
 cluster_dhcp.writeconf_allnodes()
 cluster_pxe.writepxe()
 cluster_dhcp.dhcpd_install()
+info.write_to_files()
 
 
 

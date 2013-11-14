@@ -1,6 +1,9 @@
 import socket,binascii,os
 from math import ceil
 from sys import exit
+import Queue
+
+q = Queue.Queue()
 
 class tftp():
   
@@ -21,7 +24,7 @@ class tftp():
     s.bind((self.host, self.port))
     last=()
     os.chdir(self.pxe_basedir)
-    print "[tfptd] Working in: " + os.getcwd()
+    #print "[tfptd] Working in: " + os.getcwd()
     while 1:
       try:
         message, address = s.recvfrom(8192)
@@ -29,14 +32,14 @@ class tftp():
         if message.startswith('\x00\x01'): #WRQ
           message=message.split('\x00')
           filename=message[1][1:]
-          print address,"wants",repr(filename)
+          #print address,"wants",repr(filename)
           # Se concatena el directorio donde se encuentran pxe files
           filename = filename
           if not os.path.exists(filename):
-            print "[tfptd] no such file exists: " + filename
+            #print "[tfptd] no such file exists: " + filename
             s.sendto('\x00\x05\x00\x01no such file exists',address)
             continue
-          print "[tfptd] file " + os.path.basename(filename) + " ok" 
+          #print "[tfptd] file " + os.path.basename(filename) + " ok" 
           fsize=os.path.getsize(filename)
           s.sendto('\x00\x06blksize\x00512\x00tsize\x00%s\x00' % fsize,address)
         elif message.startswith('\x00\x04'): #OptACK
@@ -49,18 +52,17 @@ class tftp():
             try:
               s.sendto('\x00\x03'+binascii.unhexlify(hex(index+1)[2:].rjust(4,'0'))+chunk,address)
             except TypeError:
-              break
+              return False
             s.recvfrom(128)
           s.sendto('\x00\x03'+binascii.unhexlify(hex(index+2)[2:].rjust(4,'0')),address)
-          if os.path.basename(filename) == "initrd.img":
-            break
           f.close() 
+          if os.path.basename(filename) == "initrd.img":
+            print "[tfptd] Terminating server..."
+            s.close()
+            return address
+            break
       except KeyboardInterrupt:
         exit()
-    print "[tfptd] Terminating server..."
-    print "[tfptd] installing node " + address[0] + "..."
-    s.close()
-    return True
 
 #Para pruebas unitarias
 if __name__ == '__main__':

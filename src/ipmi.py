@@ -15,13 +15,13 @@ class pyipmi():
     return "ipmitool -U " + self.user +  " -P " + self.passw + " -H " + ip + " " 
 
   def execute_ipmi(self, ip, cmd, err_msg):
-    error_msg = "Erro: " + err_msg + " in machine: " + ip
+    error_msg = "Error: " + err_msg + " in machine: " + ip
     cmd = self.ipmitool(ip) +  cmd
 #    print cmd
     child = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
     retcode = child.wait()
     if retcode != 0:
-      raise Exception( err_msg + '\n' + child.stderr.read() )
+      raise Exception( "IP:" + ip + " err: " + err_msg + '\n' + child.stderr.read() )
     return child.stdout.read()
 
 

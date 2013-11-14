@@ -58,7 +58,7 @@ def get_admin_macs_by_ipmi():
       for i in range( 1, nodes + 1):
         mac_ipmi, ip_ipmi, nname_ipmi = info.macs[grupo]['nodes'][i]
         mac_node = ipmitool.get_adminMAC(ip_ipmi)
-        print "MAC " + mac_node + " of node " + str(i) + " of group " + grupo_admin
+        print "MAC " + mac_node + "," + ip_ipmi + " of node " + str(i) + " of group " + grupo_admin
         tools.insert_dict(info.macs, [grupo_admin,'nodes',i], ( mac_node, str(ip_admin), grupo_admin + str(i) ) )
         ip_admin = ip_admin + 1
       info.net[iface_admin]['contador'] = ip_admin
